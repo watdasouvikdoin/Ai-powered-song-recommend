@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeMatch · Solar Recommender</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div id="starfield"></div>
+
+    <main id="app">
+        <!-- Header / Search -->
+        <header class="glass-nav">
+            <div class="logo">
+                <i data-lucide="sparkles"></i>
+                <span>VibeMatch</span>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search a song to start the system..." autocomplete="off">
+                <div id="autocomplete-list" class="autocomplete-items"></div>
+                <button id="search-btn"><i data-lucide="search"></i></button>
+            </div>
+        </header>
+
+        <!-- Solar System Arena -->
+        <div id="solar-system-container">
+            <div id="solar-system">
+                <!-- Sun will be injected here -->
+                <!-- Orbits and Planets will be injected here -->
+            </div>
+        </div>
+
+        <!-- Detail Modal (Glassmorphism) -->
+        <div id="detail-modal" class="hidden">
+            <div class="modal-content glass">
+                <button id="close-modal"><i data-lucide="x"></i></button>
+                <div id="modal-body">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Status / Feedback -->
+        <div id="status-message" class="hidden"></div>
+    </main>
+
+    <footer class="minimal-footer">
+        VibeMatch &bull; Powered by AI &bull; Cosmic UI
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

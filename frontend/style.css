@@ -1,0 +1,446 @@
+:root {
+    --bg-color: #050508;
+    --accent-primary: #8b5cf6;
+    --accent-secondary: #3b82f6;
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.5);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --sun-glow: rgba(139, 92, 246, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden; /* No scroll, the solar system is the world */
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ── Starfield ── */
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at center, #0a0a1a 0%, #050508 100%);
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: twinkle var(--duration) infinite ease-in-out;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ── Layout ── */
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+.glass-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--accent-primary);
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    border-radius: 100px;
+    padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+    width: 400px;
+    transition: all 0.3s ease;
+}
+
+.search-container:focus-within {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+    width: 450px;
+}
+
+#search-input {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+#search-btn {
+    background: var(--accent-primary);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+#search-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Autocomplete */
+.autocomplete-items {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+    font-size: 0.9rem;
+}
+
+.autocomplete-item:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* ── Solar System ── */
+#solar-system-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px;
+}
+
+#solar-system {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+}
+
+/* Sun */
+.sun {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #fff 0%, var(--accent-primary) 30%, #4c1d95 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px var(--sun-glow), 0 0 120px rgba(139, 92, 246, 0.3);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    cursor: default;
+    animation: pulseSun 4s infinite ease-in-out;
+}
+
+@keyframes pulseSun {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 80px var(--sun-glow); }
+    50% { transform: scale(1.08); box-shadow: 0 0 100px var(--sun-glow); }
+}
+
+.sun-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+/* Orbits */
+.orbit {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: border-color 0.3s;
+}
+
+/* Planets */
+.planet-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: rotateOrbit var(--duration) linear infinite;
+}
+
+/* Pause rotation on hover of the container or planet */
+#solar-system:hover .planet-container {
+    animation-play-state: paused;
+}
+
+@keyframes rotateOrbit {
+    from { transform: rotate(var(--start-angle)); }
+    to { transform: rotate(calc(var(--start-angle) + 360deg)); }
+}
+
+.planet {
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    pointer-events: auto;
+    overflow: hidden;
+    /* This ensures the planet content (icon/image) stays upright */
+    transform: rotate(calc(-1 * (var(--start-angle) + var(--current-rotation, 0deg))));
+}
+
+.planet:hover {
+    transform: scale(1.5) rotate(calc(-1 * (var(--start-angle) + var(--current-rotation, 0deg))));
+    border-color: var(--planet-color, var(--accent-secondary));
+    box-shadow: 0 0 40px var(--planet-glow, rgba(59, 130, 246, 0.5));
+    z-index: 1000;
+}
+
+.planet::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.planet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+}
+
+.planet-placeholder {
+    font-size: 1.4rem;
+    color: white;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));
+    z-index: 2;
+}
+
+.planet-label {
+    position: absolute;
+    top: calc(100% + 10px);
+    white-space: nowrap;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.planet:hover .planet-label {
+    opacity: 1;
+}
+
+/* ── Detail Modal ── */
+#detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background: rgba(20, 20, 30, 0.8);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    width: 90%;
+    max-width: 500px;
+    padding: 2.5rem;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#detail-modal:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+#close-modal {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#close-modal:hover {
+    color: white;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0;
+}
+
+/* ── Modal Content Styles ── */
+.song-detail-header {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-art {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.detail-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.detail-info p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.popularity-meter {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.popularity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.preview-player {
+    margin-top: 2rem;
+}
+
+audio {
+    width: 100%;
+    filter: invert(1) hue-rotate(180deg) brightness(1.5);
+    height: 35px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    flex: 1;
+    background: #1DB954;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.02);
+}
+
+/* ── Footer ── */
+.minimal-footer {
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
